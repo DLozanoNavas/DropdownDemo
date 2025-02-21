@@ -1,0 +1,16 @@
+﻿@page "/"
+<PageTitle>Index</PageTitle>
+
+<div class="container">
+    <div class="col-3 ">
+        <Dropdown Items="DropdownData" />
+        <button class="btn btn-danger w-100 mt-5">Button for Overflow Tests</button>
+    </div>
+</div>
+
+
+@code {
+    private List<DropdownItem> DropdownData = Enumerable.Range(1, 1000)
+        .Select(i => new DropdownItem { Id = i, Content = $"Item {i}" })
+        .ToList();
+}

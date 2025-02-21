@@ -1,0 +1,15 @@
+﻿<div class="dropdown">
+    <button id="@ButtonId" class="dropdown-btn" @onclick="ToggleDropdown">
+        @(SelectedItem?.Content ?? "Select an option")
+    </button>
+
+    <div id="@DropdownId" class="dropdown-content @ContentCss">
+        <Virtualize Items="@Items" Context="item" ItemSize="35">
+            <div @key="@item.Id"
+                 class="dropdown-item"
+                 @onclick="() => SelectItem(item)">
+                @item.Content
+            </div>
+        </Virtualize>
+    </div>
+</div>
