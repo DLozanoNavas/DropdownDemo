@@ -12,11 +12,7 @@ namespace BlazorApp9.Components
     public partial class Dropdown : ComponentBase, IAsyncDisposable
     {
         private bool IsOpen;
-        protected string ContentCss = "hidden";  // ✅ Now assignable
-
         private DotNetObjectReference<Dropdown>? _dotNetRef;
-        private IJSObjectReference? _jsModule;
-
         private readonly string DropdownId;
         private readonly string ButtonId;
 
@@ -35,30 +31,14 @@ namespace BlazorApp9.Components
         protected async Task ToggleDropdown()
         {
             IsOpen = !IsOpen;
-            ContentCss = IsOpen ? "show" : "hidden";  // ✅ Now assignable
-            StateHasChanged();
-
-            if (IsOpen)
-            {
-                await JS.InvokeVoidAsync("utils.positionDropdown", DropdownId, ButtonId);
-            }
+            await JS.InvokeVoidAsync("utils.toggleDropdown", DropdownId, ButtonId);
         }
 
         private async Task SelectItem(DropdownItem item)
         {
             SelectedItem = item;
             await OnSelected.InvokeAsync(item);
-            IsOpen = false;
-            ContentCss = "hidden";  // ✅ Properly closes
-            StateHasChanged();
-        }
-
-        [JSInvokable]
-        public void CloseDropdown()
-        {
-            IsOpen = false;
-            ContentCss = "hidden";  // ✅ Properly closes
-            StateHasChanged();
+            await JS.InvokeVoidAsync("utils.closeDropdown", DropdownId);
         }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -66,7 +46,7 @@ namespace BlazorApp9.Components
             if (firstRender)
             {
                 _dotNetRef = DotNetObjectReference.Create(this);
-                await JS.InvokeVoidAsync("utils.addDropdownCloseEventBehavior", _dotNetRef);
+                await JS.InvokeVoidAsync("utils.registerDropdown", _dotNetRef, DropdownId);
             }
         }
 
@@ -74,7 +54,7 @@ namespace BlazorApp9.Components
         {
             if (_dotNetRef is not null)
             {
-                await JS.InvokeVoidAsync("utils.removeDropdownCloseEventBehavior", _dotNetRef);
+                await JS.InvokeVoidAsync("utils.unregisterDropdown", _dotNetRef, DropdownId);
                 _dotNetRef.Dispose();
             }
         }

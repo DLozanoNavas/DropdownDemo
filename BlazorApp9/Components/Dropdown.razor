@@ -3,7 +3,7 @@
         @(SelectedItem?.Content ?? "Select an option")
     </button>
 
-    <div id="@DropdownId" class="dropdown-content @ContentCss">
+    <div id="@DropdownId" class="dropdown-content hidden">
         <Virtualize Items="@Items" Context="item" ItemSize="35">
             <div @key="@item.Id"
                  class="dropdown-item"
